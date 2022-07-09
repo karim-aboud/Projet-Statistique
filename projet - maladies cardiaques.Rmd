@@ -794,7 +794,73 @@ On trouve une **p-valeur** égale à 2x10^-6. On rejette l'hypothèse H0 et on e
 
 ## Quanti x Quanti
 
-Procédons maintenant à l'analyse Quanti x Quanti. Ici, on regarde la régression linéaire permettant (ou pas) d’expliquer la concentration en ozone par la température
+Procédons maintenant à l'analyse Quanti x Quanti. Ici, on regarde la régression linéaire permettant (ou pas) d’expliquer la fréquence cardiaque maximale atteinte par l'âge.
+
+Nous représentons le nuage de points (**Age**,**MaxHR**) :
+
+```{r}
+ggplot(heart,aes(x=Age,y=MaxHR))+ geom_point()+
+xlab("Age")+
+ylab("Frequence cardiaque maximale atteinte")
+```
+
+On remarque que le nuage de points ne forme pas une ligne, on lance la régression linéaire simple:
+
+```{r}
+simple_reg <- lm(MaxHR~Age,data=heart)
+anova(simple_reg)
+summary(simple_reg)
+```
+
+On en déduit l'équation de la droite de moindre carrées: MAxHR = -1.0312 * Age + 191.9902.
+
+La p-valeur est très petite et on voit qu'il ya 3 étoiles pour le paramètre Age et l'ordonnée à l'origine. Cela veut dire qu'ils sont significatif et qu'on peut les garder.
+
+Le coefficient de détermination R^2 est d’environ 0.146 ce qui très bas (la droite n'est pas très adéquate). Mais Un R^2 proche n’implique pas qu’aucune relation ne puisse ˆetre ´etablie entre les variables.
+
+On trace la ligne de régression:
+
+```{r}
+ggplot(heart,aes(x=Age,y=MaxHR))+ geom_point()+
+stat_smooth(method="lm",se=FALSE)+ xlab("Age")+
+ylab("MaxHR")
+
+```
+
+Normalité des résidus
+
+```{r}
+plot(simple_reg,2)
+```
+
+La points suivent la bissectrice sauf vers la fin. Ayant un grand échantillon, on suppose qu'elle suit une loi normale.
+
+```{r}
+par(mfrow=c(1,2))
+plot(simple_reg,3)
+plot(simple_reg,1)
+```
+
+Il doivent contenir aucune structure particulière apparante donc c'est normale que ça soit éparpillé.
+
+
+Enfin, on peut calculer le coefficient de corrélation linéaire (de Pearson)
+
+L'hypothèse nulle d'un test de corrélation est une corrélation de 0, ce qui signifie qu'il n'y a pas de relation du tout.
+
+
+```{r}
+cor.test(Age, MaxHR,use="complete.obs")
+```
+
+On a une p-valeur très petite, on rejette donc l'hypothèse **H0** et on en déduit qu'il ya une corrélation entre **Age** et **MaxHR**.
+
+Cette corrélation est estimé à **-0.38**, ce qui veut dire qu'il y a une **corrélation négative** entre les variables.
+
+
+## Conclusion
+
+
 
 
 
