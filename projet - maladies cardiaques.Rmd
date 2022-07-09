@@ -89,7 +89,7 @@ Comme variables, on a au total :
 
 **5 variables quantitatives continue** (Age, RestingBP, Cholesterol, MaxHR, Oldpeak).
 
-**6 variables qualitatives** (Sex, ChestPainType, FastingBS, RestingECG, ExerciceAngina, ST_Slopem, HeartDisease) dont 1 variable cible (HeartDisease)
+**6 variables qualitatives** (Sex, ChestPainType, FastingBS, RestingECG, ExerciceAngina, ST_Slope, HeartDisease) dont 1 variable cible (HeartDisease)
 
 Pour l'analyse, on s'interesse plus particulièrement à 3 variables quantitatives et 4 variables qualitatives et à la variable à prédire **HeartDisease**
 
@@ -363,6 +363,7 @@ Si le MaxHR maximale se situe entre:
 
 On en déduit que **plus le MaxHR est bas**, **plus** on a de chances d'avoir des maladie cardiaques.
 
+<br>
 
 <font size="4"> Estimateurs de la moyenne et variance de **MaxHR** </font>
 
@@ -388,7 +389,7 @@ On trouve 649 comme estimation de la variance de **MaxHR** et 25 pour l'écart-t
 
 <font size="5">Intervalle de confiance de **la moyenne** de MaxHR</font> 
 
-Calculons l'intervalle de confiance de la moyenne d'âge avec un niveau de confiance de **99%**.
+Calculons l'intervalle de confiance de la moyenne de **MaxHR** avec un niveau de confiance de **99%**.
 
 On pose l'hypothèse:
 
@@ -701,7 +702,7 @@ summary(MaxHR_Flat)
 boxplot(MaxHR_Up, MaxHR_Flat, main="Fréq cardiaque max atteinte selon la pente ST", names=c("Up", "Flat"))
 ```
 
-On voit que lorsque la pente est ascendante, la médiane (et la moyenne) de la fréquence cardiaque maximale atteinte est supérieur (150) à lorsqu'elle est nulle (126). On remarque qu'il ya plus de variétés dans les modalités de **MaxHR** lorsque **ST_Slop** = ***Flat** (ça va de 60 jusqu'à presque 200).
+On voit que lorsque la pente est ascendante, la médiane (et la moyenne) de la fréquence cardiaque maximale atteinte est supérieur (150) à lorsqu'elle est nulle (126). On remarque qu'il ya plus de variétés dans les modalités de **MaxHR** lorsque **ST_Slope** == ***Flat** (ça va de 60 jusqu'à presque 200).
 
 Faisons maintenant les tests de comapraisons
 
@@ -709,7 +710,9 @@ Faisons maintenant les tests de comapraisons
 ### Test de variances
 
 Hypothèses:
+
 - H0: variance égales
+
 - H1: variance différentes
 
 ```{r}
@@ -725,7 +728,9 @@ On peut poursuivre avec une comparaison des moyennes
 ### Test de moyennes
 
 Hypothèses:
+
 - H0: moyennes égales
+
 - H1: moyennes différentes
 
 ```{r}
@@ -859,6 +864,11 @@ Cette corrélation est estimé à **-0.38**, ce qui veut dire qu'il y a une **co
 
 
 ## Conclusion
+
+À travers l'analyse univariée, on a put déterminer que la variable **MaxHR** a une influence sur **HeartDisease**: on a trouvé que plus le MaxHR est bas, plus on a de chances d’avoir des maladie cardiaques. De plus, on a vu que  les individus ayant une angine de poitrine induite par l’exercice,  avaient des grandes chances d'avoir des maladies cardiaques. Ceci a été confirmé en faisant un test d'indépendances des variables dans lequel on a trouvé que les variables **HeartDiesease** et **ExerciseAngina** sont bien dépendantes.
+
+
+ 
 
 
 
