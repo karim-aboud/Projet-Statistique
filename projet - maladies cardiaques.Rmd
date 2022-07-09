@@ -1,0 +1,800 @@
+---
+title: "Projet - Maladies Cardiaques"
+author: "Karim Aboud & Mitia Ravelobaoavy"
+date: '2022-07-08'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(ggcorrplot)
+
+```
+
+# Introduction
+
+### Chargement des données
+
+```{r, message=FALSE, warning=FALSE,error=FALSE, results='hide'}
+heart <- read.csv("heart.csv")
+attach(heart)
+```
+
+### Description du jeux de données
+
+Les maladies cardiovasculaires (MCV) sont la première cause de décès dans le monde. On estime que 17,9 millions de personnes en meurent chaque année, ce qui représente 31 % de tous les décès dans le monde. Quatre décès par MCV sur cinq sont dus à des crises cardiaques et à des accidents vasculaires cérébraux, et un tiers de ces décès surviennent prématurément chez les personnes de moins de 70 ans. L'insuffisance cardiaque est un événement courant causé par les MCV et cet ensemble de données contient 11 caractéristiques qui peuvent être utilisées pour prédire une éventuelle maladie cardiaque.
+
+Les personnes atteintes d'une maladie cardiovasculaire ou présentant un risque cardiovasculaire élevé (en raison de la présence d'un ou plusieurs facteurs de risque tels que l'hypertension, le diabète, l'hyperlipidémie ou une maladie déjà établie) ont besoin d'une détection et d'une prise en charge précoces, pour lesquelles un modèle d'apprentissage automatique peut être d'une grande aide.
+
+Ci dessous les different variables présentes dans notre jeu de données
+
+1. **Age** : âge du patient [années].
+
+2. **Sex** : sexe du patient [M : Male, F : Female].
+
+3. **ChestPainType** : type de douleur thoracique [TA : Angine typique, ATA : Angine atypique, NAP: Douleur non angineuse, ASY : Asymptomatique].
+
+4. **RestingBP** : pression artérielle au repos [mm Hg].
+
+5. **Cholestérol** : cholestérol sérique [mm/dl].
+
+6. **FastingBS** : glycémie à jeun [1 : si FastingBS > 120 mg/dl, 0 : sinon].
+
+7. **RestingECG** : résultats de l'électrocardiogramme au repos [Normal : normal, ST : présentant une anomalie de l'onde ST-T (inversions de l'onde T et/ou élévation ou dépression du segment ST de > 0,05 mV), HVG : présentant une hypertrophie ventriculaire gauche probable ou certaine selon les critères d'Estes].
+
+8. **MaxHR** : fréquence cardiaque maximale atteinte [Valeur numérique comprise entre 60 et 202].
+
+9. **ExerciseAngina** : angine de poitrine induite par l'exercice [Y : Oui, N : Non].
+
+10. **Oldpeak** : oldpeak = ST: Dépression du segment ST. La dépression ST désigne une constatation sur un électrocardiogramme, dans laquelle le tracé du segment ST est anormalement bas par rapport à la ligne de base.
+
+11. **ST_Slope** : la pente du segment ST du pic d'exercice [Up : en pente ascendante, Flat : plat, Down : en pente descendante].
+
+12. **HeartDisease** : classe de sortie [1 : maladie cardiaque, 0 : normal].
+
+<br>
+
+### Description de la population étudiée
+
+Ce jeu de données a été créé en combinant différents jeux de données déjà disponibles indépendamment mais non combinés auparavant. Dans ce jeu de données, 5 jeux de données sur les maladies cardiaques sont combinés sur 11 caractéristiques communes. Les cinq ensembles de données utilisés pour sa création sont les suivants :
+
+Cleveland : 303 observations
+
+Hongrois : 294 observations
+
+Suisse : 123 observations
+
+Long Beach VA : 200 observations
+
+Ensemble de données Stalog (cœur) : 270 observations
+
+Total : 1190 observations
+Dupliquées : 272 observations
+
+Ensemble de données final : **918 observations** dont **193 Femmes** et **725 Hommes**
+
+<br>
+
+### Description des variables d’intérêt
+
+Regardons la structure de nos données
+
+```{r}
+str(heart)
+```
+
+Comme variables, on a au total :
+
+**5 variables quantitatives continue** (Age, RestingBP, Cholesterol, MaxHR, Oldpeak).
+
+**6 variables qualitatives** (Sex, ChestPainType, FastingBS, RestingECG, ExerciceAngina, ST_Slopem, HeartDisease) dont 1 variable cible (HeartDisease)
+
+Pour l'analyse, on s'interesse plus particulièrement à 3 variables quantitatives et 4 variables qualitatives et à la variable à prédire **HeartDisease**
+
+**Variables quantitatives**: Age, Cholesterol, MaxHR
+
+**Variables qualitatives**: Sex, ChestPainType, ExerciceAngina, ST_Slope
+
+**Variable cible**: HeartDisease
+
+<br>
+
+### Questions posées
+
+**1.** Est ce que le **Sex** a t-il une influence sur l'apparition de maladies cardiaques?
+
+**2.** Quels sont les paramètres "médicaux" qui peuvent prédire une maladie cardiaques?
+
+<br>
+
+### Nettoyage des données
+
+Vérifions d'abord si on a des données manquantes
+
+```{r}
+sum(is.na(heart))
+```
+
+On obtient **0**, donc aucune valeur manquante.
+
+```{r}
+sum(Cholesterol==0)
+```
+
+Dans notre jeu données on remarque la présence de valeurs abérrantes, plus particulièrement la variable **Cholesterol** qui a 172 valeurs nulle (ce qui n'est pas réaliste).
+
+Nous imputerons (par la médiane) les niveaux de cholestérol en fonction du sexe et du statut de la maladie cardiaque.
+
+```{r, results='hide'}
+# Pour les Hommes
+heart[Sex=='M' & heart$Cholesterol==0 & heart$HeartDisease==0,'Cholesterol'] <- median(heart[heart$Sex=='M' & heart$HeartDisease==0,'Cholesterol'],na.rm=T)
+
+# Pour les Femmes
+heart[heart$Sex=='F' & heart$Cholesterol==0 & heart$HeartDisease==0,'Cholesterol'] <- median(heart[heart$Sex=='F' & heart$HeartDisease==0,'Cholesterol'],na.rm=T)
+
+# Maintenant nous allons passer à ceux qui ont des maladies cardiaques
+# Hommes
+heart[heart$Sex=='M' & heart$Cholesterol==0 & heart$HeartDisease==1,'Cholesterol'] <-
+  median(heart[heart$Sex=='M' & heart$HeartDisease==1,'Cholesterol'],na.rm=T)
+
+# Femmes
+heart[heart$Sex=='F' & heart$Cholesterol==0 & heart$HeartDisease==1,'Cholesterol'] <-
+  median(heart[heart$Sex=='F' & heart$HeartDisease==1,'Cholesterol'],na.rm=T)
+
+Cholesterol <- heart$Cholesterol
+```
+
+Avant d'explorer les données, convertissons les attributs de classe en fonction des besoins de notre analyse.
+
+En effet, les facteurs sont des variables dans R qui prennent un nombre limité de valeurs différentes. Ces variables sont souvent appelées variables catégorielles.
+
+L'une des utilisations les plus importantes des facteurs est la modélisation statistique, puisque les variables catégoriques entrent dans les modèles statistiques différemment des variables continues, le stockage des données en tant que facteurs garantit que les fonctions de modélisation traiteront ces données correctement.
+
+
+En observant la structure de notre jeu de données, nous pouvons dire les points suivants:-
+
+- **FastingBS** ne peut pas être une variable continue car elle indique seulement si une personne a jeûné pendant la nuit. Nous devons la convertir en facteur et l'étiqueter à notre convenance.
+
+- **HeartDisease** est la variable prédictive et nous indique si l'individu a une insuffisance cardiaque ou non. Par conséquent, nous convertissons la variable en facteur et l'étiquetons à notre convenance.
+
+
+```{r}
+heart$FastingBS <- as.factor(heart$FastingBS)
+levels(heart$FastingBS) <- c("No", "Yes")
+
+heart$HeartDisease <- as.factor(heart$HeartDisease)
+levels(heart$HeartDisease) <- c("No", "Yes")
+```
+
+Vérification que les changements ci-dessus sont mis en oeuvre
+
+```{r, results='hold'}
+str(heart$FastingBS)
+str(heart$HeartDisease)
+```
+
+<br>
+
+# Analyse Univariée
+
+Pour l'analyse univariée on va explorer les variables quantitatives **Age** et **MaxHR** et comme variables qualitatives, on va explorer les variables **ChestPainType** et **ExerciseAngina**.
+
+### La variable **Age**
+
+Voyons tout d'abord la répartition globale de la variable **Age**
+
+```{r}
+age_hist <- ggplot(heart, aes(x=Age)) + 
+  geom_histogram(binwidth=1, color="black", fill="lightblue") +
+  geom_vline(aes(xintercept = mean(Age)), color = "red", linetype = "dashed", size = 1) +
+  labs(title="Histogramme de Age")
+
+print(age_hist)
+```
+
+
+```{r, results='hold'}
+mean(Age)
+sd(Age)
+summary(Age)
+```
+
+L'age de l'échantillon est compris entre 28 ans et 77 ans.
+
+La moyenne d'age est de 53,5 ans, ce qui veut dire que la population étudier est une population agé.
+
+La médiane étant de 54 ans (très proche de la moyenne), ceci implique qu'il n'ya pas beaucoup de valeurs abérantes (sinon la moyenne serait différente par rapport à la médiane).
+
+On veut s'assurer que les variables quantitatives suivent une distribution normale.
+
+Il existent plusieurs méthodes pour vérifier si des données suivent une loi normale ou non:
+
+- En regardant l'histogramme et la courbe de densité
+- En traçant le QQ-plot
+- En testant avec shapiro.test
+
+```{r}
+hist(Age, probability = TRUE, main = "Repartition de l'age")
+
+points(seq(0,85,0.5),dnorm(seq(0,85,0.5),mean(Age),sd(Age)), col="red",type="l")
+qqnorm(Age)
+abline(mean(Age),sd(Age),col=2)
+
+```
+
+Ici, on voit bien que la variable age suit une loi normale car les points du graphique Q-Q se trouve sur une ligne diagonale droite.
+
+Interessons nous de plus près à l'age des individus.
+
+Regardons la répartition de l'age **Age** selon le **Sex**
+
+
+```{r}
+age_sex_hist <- ggplot(heart, aes(x=Age, fill=Sex, color=Sex)) +
+  geom_histogram(binwidth=1,position="identity", alpha=0.5) +
+  geom_vline(data=heart, aes(xintercept=mean(Age), color=Sex), linetype="dashed") +
+  labs(title="Distribution de l'age selon le sexe") +
+  facet_grid(~Sex)
+
+print(age_sex_hist)
+```
+
+Les observations masculines sont plus denses entre 50 et 65 ans.
+
+On peut vérifier cela en regardant l'effectif d'hommes et femmes
+
+```{r}
+table(Sex)
+```
+
+On voit qu'il y'a 3.7x plus d'hommes que de femmes dans cette étude.
+
+On vérifie si la moyenne d'age pour les deux sex sont proche
+
+```{r}
+heart %>%
+  group_by(Sex) %>%
+  summarise(mean = mean(Age), n = n())
+```
+
+Les hommes ont une moyenne d'age de 53.8 ans. 
+
+Les femmes ont une moyenne d'age de 52.5 ans. 
+
+Bien qu'il y ait 3.7x plus d'hommes que de femmes, les deux moyennes sont assez proche. La variable age ne va donc pas biaiser l'analyse en faveur d'un des sex.
+
+
+On s'interesse maintenant à voir les maladies cardiaque en fonction de l'age.
+
+```{r}
+ggplot(heart,aes(x=Age,fill=HeartDisease,color=HeartDisease)) +
+geom_histogram(binwidth = 1,color="black")+
+stat_count(geom = "text", aes(label = stat(count)), 
+             position = position_stack(), color = "black")+
+ylab("Effectif")
+```
+
+Sur ce graphique, on peut voir le nombre de personne qui ont des maladies cardiaque en fonction de l'age. Entre 54 et 63 ans le nombre de maladies cardiaque est le plus élevé.
+
+Cependant, à première vue, ce graphique peut induire en erreur dans le sens où si on regarde pour l'age 72, on voit qu'il n'ya que 3 maladies cardiaque comparé  28 maladies cardiaque pour un age de 58 an. Ceci est du au fait qu'il ya beacoup moins de données pour l'age 72 (4 données) contrairement à l'age 58 (42 données)
+
+Il faut donc aussi voir par proportion d'age.
+
+```{r}
+ggplot(heart,aes(x=Age,fill=HeartDisease,color=HeartDisease)) +
+geom_histogram(position = "fill", binwidth = 1, alpha=0.7, color="black")+
+ylab("Proportion de maladie cardiaque") +
+ggtitle("Proportion de maladie cardiaque en fonction de l'age")
+```
+
+Ici, on voit bien que plus l'age augmente, plus la proportion de maladies cardiaque augmente.
+On voit par exemple que 75% des personne ayant 72 ans, ont des maladies cardiaque contre 64% pour ceux ayant 58 ans.
+
+<br>
+
+<font size="5">Intervalle de confiance de **la moyenne** d'âge</font> 
+
+Calculons l'intervalle de confiance de la moyenne d'âge avec un niveau de confiance de **95%**.
+
+On pose l'hypothèse:
+
+- **H0: µ = 53**
+
+- **H1: µ ≠ 53**
+
+```{r}
+t.test(Age, mu=53, alternative = "two.sided", conf.level = 0.95)
+```
+
+On obtient l'intervalle **[52.89991 , 54.12188]** avec une **p-valeur = 0.1**.
+
+la p-valeur étant supérieur à **0.05**, on **accepte** l'hypothèse **H0**.
+
+L'intervalle de confiance à 95% est un intervalle de valeurs qui a 95% de chance de contenir la vraie valeur du paramètre estimé.
+
+
+
+### La variable **MaxHR**
+
+```{r, results='hold'}
+mean(MaxHR)
+sd(MaxHR)
+summary(MaxHR)
+```
+
+
+```{r, results='hold'}
+par(mfrow=c(1,3))
+boxplot(MaxHR)
+hist(MaxHR)
+qqnorm(MaxHR)
+abline(mean(MaxHR),sd(MaxHR),col=2)
+```
+
+Le boxplot montre que la variable prend beaucoup de modalités allant de 60 jusqu'à 202. Cependant, le boxplot est assez symétrique (n'est pas dispersé en haut ni en bas) avec une moyenne (136.8)  proche de la médiane (138).
+
+Avec l'histogramme on voit que le mode est à 120 - 150 et que la répartition est assez symétrique. Le Q-Q plot suit en grande partie la ligne droite diagonale. On peut donc supposer que **MaxHR** suit une loi normale.
+
+<br>
+
+Examinons les valeurs de **MaxHR** et découpons les en intervalles [60-100] ; [100-140] ; [140-180] et [180-200].
+
+Pour chaque intervalle, calculons la proportion d'individus ayant des maladies cardiaques.
+
+```{r}
+cut_MaxHR<-split(heart, cut(MaxHR, c(60,100,140,180,220), include.lowest=TRUE))
+sum(cut_MaxHR[[1]]$HeartDisease=="Yes")/nrow(cut_MaxHR[[1]]) #60-100
+sum(cut_MaxHR[[2]]$HeartDisease=="Yes")/nrow(cut_MaxHR[[2]])#100-140
+sum(cut_MaxHR[[3]]$HeartDisease=="Yes")/nrow(cut_MaxHR[[3]])#140-180
+sum(cut_MaxHR[[4]]$HeartDisease=="Yes")/nrow(cut_MaxHR[[4]])#180-220
+```
+
+Si le MaxHR maximale se situe entre:
+
+- 60 et 100, il y a 79 % de chances de souffrir d'une maladie cardiaque. 
+
+- 100 et 140, 68 % de chances. 
+
+- 140 et 180,  38 % de chances.
+
+- et enfin entre 180-220, que 15 % de chances.
+
+On en déduit que **plus le MaxHR est bas**, **plus** on a de chances d'avoir des maladie cardiaques.
+
+
+<font size="4"> Estimateurs de la moyenne et variance de **MaxHR** </font>
+
+L'estimateur non biasé de la moyenne est la moyenne empirique de **MaxHR**
+
+```{r}
+mean(MaxHR)
+```
+
+La moyenne estimé est donc de **137** bpm.
+
+L'estimateur non biaisé de la variance est la variance corrigé de **MaxHR**
+
+```{r}
+var_corrige_MaxHR <- (NROW(MaxHR)/(NROW(MaxHR)-1)) * var(MaxHR)
+var_corrige_MaxHR
+
+sd_corrige_MaxHR <- sqrt(var_corrige_MaxHR)
+sd_corrige_MaxHR
+```
+On trouve 649 comme estimation de la variance de **MaxHR** et 25 pour l'écart-type. 
+
+
+<font size="5">Intervalle de confiance de **la moyenne** de MaxHR</font> 
+
+Calculons l'intervalle de confiance de la moyenne d'âge avec un niveau de confiance de **99%**.
+
+On pose l'hypothèse:
+
+- **H0: µ = 135**
+
+- **H1: µ ≠ 135**
+
+```{r}
+t.test(MaxHR, mu=135, alternative = "two.sided", conf.level = 0.99)
+```
+
+On obtient l'intervalle **[135 , 139]** avec une **p-valeur = 0.03**.
+
+la p-valeur étant inférieur à **0.05**, on **rejette** l'hypothèse **H0**.
+
+=> **99%** de chance d'avoir une valeur de **MaxHR** entre 135 et 139.
+
+<br>
+
+### La variable **ChestPainType**
+
+Regardons la distribution des different types de douleur thoracique
+
+```{r}
+chest_pain_bar <- ggplot(heart, aes(x=ChestPainType, fill=ChestPainType)) +
+  geom_bar() +
+  labs(title="Distribution des types de douleur thoracique", ylab="Effectif")
+
+print(chest_pain_bar)
+```
+
+Et en terme de pourcentage..
+
+```{r}
+chest_pain_table <- table(ChestPainType)
+chest_pain_pct<-round(chest_pain_table/sum(chest_pain_table)*100)
+
+lbls1<-paste(names(chest_pain_table),chest_pain_pct)
+lbls<-paste(lbls1, "%", sep="")
+
+pie(chest_pain_table, labels = lbls, 
+    col = rainbow(length(lbls)),
+    main="Pie Chart of Chest Pain",radius = 0.9)
+```
+
+Environ 500 observations sont asymptomatiques, ce qui signifie que la moitié (54%) des individus ne présentaient aucun symptôme préalable avant de subir une crise cardiaque.
+
+
+
+Regardons maintenant la répartiton de la variable **ChestPainType** selon le **Sex**
+
+```{r}
+chest_pain_bar <- ggplot(heart, aes(x=ChestPainType, fill=ChestPainType)) +
+  geom_bar() +
+  facet_grid(~Sex) +
+  labs(title="Distribution of chest pain type")
+
+print(chest_pain_bar)
+
+```
+
+Environ 500 observations sont asymptomatiques (~400 hommes, ~100 femmes), ce qui signifie que la moitié de nos participants ne présentaient aucun symptôme antérieur avant de subir une crise cardiaque.
+
+Comme nous pouvons le constater, les femmes sont nettement moins asymptomatiques que les hommes et ont beacoup plus (en terme de proprtion) d'angines atypiques (ATP) et de douleurs non angineuses (NAP) que les hommes.
+
+<br>
+
+### La variable **ExerciseAngina** 
+```{r}
+exercice_angina_table <- table(ExerciseAngina)
+exercice_angina_pct<- round(table(ExerciseAngina)/sum(table(ExerciseAngina))*100,2)
+
+lbls2<-paste(names(exercice_angina_table),exercice_angina_pct)
+lbls_angina<-paste(lbls2, "%", sep="")
+
+pie(exercice_angina_table, labels = lbls_angina, 
+    col = c("green","red"),
+    main="Pie Chart of Exercise Angina",radius = 0.9)
+```
+
+
+Proportions d'individus ayant des maladies cardiaques en fonction de **ChestPainType**
+
+```{r, warning=FALSE, message=FALSE}
+heart %>%
+    group_by(ExerciseAngina, HeartDisease) %>%
+    summarise(n_count = n()) %>%
+    mutate(proportion = round(n_count / sum(n_count), 2))
+
+ggplot(data = heart %>%
+    group_by(ExerciseAngina, HeartDisease) %>%
+    summarise(n_count = n()) %>%
+    mutate(proportion = round(n_count / sum(n_count), 2)), mapping = aes(x = ExerciseAngina, y = proportion, fill = as.factor(HeartDisease))) + geom_col(position = "dodge", alpha = 0.7) + theme_minimal() +
+    scale_fill_manual("Heart Disease",values=c("orange","blue"))
+```
+
+On voit que **85% des individus ayant une angine de poitrine induite par l'exercice**, ont des **maladies cardiaques**.
+
+L'angine de poitrine induite par l'exercice provoque-t-elle des maladies cardiaques?
+
+```{r, warning=FALSE}
+ExcerciseAngina_Y<-subset(heart,ExerciseAngina=="Y")
+ExcerciseAngina_N<-subset(heart,ExerciseAngina=="N")
+sum(ExcerciseAngina_Y$HeartDisease=="Yes")/nrow(ExcerciseAngina_Y)
+sum(ExcerciseAngina_N$HeartDisease=="Yes")/nrow(ExcerciseAngina_N)
+ggplot(data=heart,aes(ExerciseAngina,fill=factor(HeartDisease)))+geom_bar( )
+
+# Est-ce statistiquement significatif ?
+```
+
+Il y a 43% et 57% de chances qu'une personne qui fait une angine de poitrine à l'effort soit atteinte d'une maladie cardiaque.
+
+Regardons maintenant la répartiton de la variable **ExerciseAngina** selon le **Sex**
+
+```{r}
+ex_ang_bar <- ggplot(heart, aes(x=ExerciseAngina, fill=ExerciseAngina)) +
+  geom_bar() +
+  facet_grid(~Sex) +
+  labs(title="Distribution of ExerciseAngina")
+
+print(ex_ang_bar)
+```
+
+On voit que les Hommes ont beaucoup plus d'angines de poitrine induite par l'exercice que les femmes (en prenant en compte les proportions). On peut donc se demander is la variable **ExerciseAngina** influe sur la variable cible **HeartDisease**.
+
+<br>
+
+#### Proportion de maladies cardiaque selon le Sexe
+
+
+```{r, warning=FALSE, message=FALSE}
+heart %>%
+    group_by(Sex, HeartDisease) %>%
+    summarise(n_count = n()) %>%
+    mutate(proportion = round(n_count / sum(n_count), 2))
+
+ggplot(data = heart %>%
+    group_by(Sex, HeartDisease) %>%
+    summarise(n_count = n()) %>%
+    mutate(proportion = round(n_count / sum(n_count), 2)), mapping = aes(x = Sex, y = proportion, fill = as.factor(HeartDisease))) + geom_col(position = "dodge", alpha = 0.7) + theme_minimal() +
+    scale_fill_manual("Heart Disease",values=c("orange","red"))
+```
+
+Nous pouvons constater que **63% des hommes** avaient déjà souffert de maladies, alors que seulement **28% des femmes** avaient déjà souffert de maladies cardiaques. Nous pouvons déterminer que les maladies cardiaques sont plus fréquentes chez **les hommes**    .
+
+
+
+
+<br>
+
+# Analyse Multivariée
+
+## Quanti x Quali
+
+Pour étudier si une variable qualitative **X** influe sur une variable quantitative **Y**, nous faisons :
+
+**1**. Calcul de la **variance intra-classe W** en utilisant les variances vark (Y) de chaque groupe k
+
+**2.** Calcul de la **variance inter-classe B** en utilisant les moyenne Yk de chaque groupe k et la moyenne globale Y
+
+**3.** Calcul de la **variance globale V**
+
+**4.** Calcul du **rapport de corrélation η**
+
+**5. Conclure suivant les valeurs de η** 
+
+
+Prenons la variable qualitative **ST_Slope** et la variable quantitative **MaxHR**.
+
+<br>
+
+### Definition des sous populations (groupes)
+
+On va prendre 2 groupes: 
+
+- Le premier groupe composé d'individus ayant une pente **ascendante**  du segment ST du pic d’exercice (ST_Slope == "Up")
+
+- Le deuxième groupe composé d'individus ayant une pente **nulle**  du segment ST du pic d’exercice (ST_Slope == "Flat")
+
+On ne va pas considérer le troisième groupe (ST_Slope == "Down") car très peu d'effectifs (** < 7%**), donc non significatif.
+
+```{r}
+# Groupe 1
+st_slope_up <- heart[heart$ST_Slope=="Up",c("ST_Slope","MaxHR")]
+
+effectif_st_slope_up <- NROW(st_slope_up) # nombre de personne ayant une pente ascendante du segment ST du pic d’exercice
+
+# Groupe 2
+st_slope_flat <- heart[heart$ST_Slope=="Flat",c("ST_Slope","MaxHR")]
+
+effectif_st_slope_flat <- NROW(st_slope_flat) # nombre de personne ayant une pente nulle (plate) du segment ST du pic d’exercice
+```
+
+L'effectif du premiere groupe (**ayant une pente ascendante**) est de **`r effectif_st_slope_up`**.
+
+L'effectif du deuxieme groupe (**ayant une pente ascendante**) est de **`r effectif_st_slope_flat`**.
+
+
+### Moyenne d'un groupe
+
+```{r}
+
+moy_MaxHR_ST_Up <- mean(st_slope_up$MaxHR)
+moy_MaxHR_ST_Flat <- mean(st_slope_flat$MaxHR)
+
+moy_MaxHR_ST_Up
+moy_MaxHR_ST_Flat
+
+```
+
+La moyenne de **MaxHR** du premier groupe est de **`r round(moy_MaxHR_ST_Up,2)`**.
+
+La moyenne de **MaxHR**  du deuxième groupe est de **`r round(moy_MaxHR_ST_Flat,2)`**.
+
+On voit qu'il ya une différence de **20 points** entre le premier groupe (pente ascendante) et le deuxième (pente plate).
+
+Poursuivons en calculons la **moyenne globale**.
+
+
+### Moyenne globale
+
+La moyenne globale est **la moyenne pondérée des moyennes des groupes**.
+
+```{r}
+effectif_totale <- effectif_st_slope_up + effectif_st_slope_flat
+
+moy_globale_MaxHR <- (1/effectif_totale) * (effectif_st_slope_up * moy_MaxHR_ST_Up + effectif_st_slope_flat * moy_MaxHR_ST_Flat)
+
+moy_globale_MaxHR
+```
+
+La **moyenne global** de **MaxHR** est de **`r round(moy_globale_MaxHR, 2)`**.
+
+On peut actuellement calculer la variance **intraclasse** W et **interclasse** B.
+
+Pour cela, on commence par calculer la **variance de groupe** V.
+
+```{r}
+var_MaxHR_MaxHR_ST_Up <- var(st_slope_up$MaxHR) * ((effectif_st_slope_up - 1)/effectif_st_slope_up)
+
+var_MaxHR_MaxHR_ST_Flat <- var(st_slope_flat$MaxHR) * ((effectif_st_slope_flat - 1)/effectif_st_slope_flat)
+```
+
+La variance de **MaxHR** du groupe 1 (**pente ascendante**) est de **`r round(var_MaxHR_MaxHR_ST_Up,2)`**.
+
+La variance de **MaxHR** du groupe 2 (**pente nulle**) est de **`r round(var_MaxHR_MaxHR_ST_Up ,2)`**.
+
+
+Calculons la **variance intra-classe W**
+
+```{r}
+W <- (1/effectif_totale) * ( effectif_st_slope_up * var_MaxHR_MaxHR_ST_Up  + effectif_st_slope_flat * var_MaxHR_MaxHR_ST_Flat ) 
+
+```
+
+La **variance intra-classe** W est de **`r round(W,2)`**.
+
+
+Calculons la variance inter-classe B
+
+```{r}
+B <- (1/effectif_totale) * ( effectif_st_slope_up * (moy_MaxHR_ST_Up - moy_globale_MaxHR)^2 + effectif_st_slope_flat * (moy_MaxHR_ST_Flat - moy_globale_MaxHR)^2 )
+```
+
+La **variance inter-classe** B est de **`r round(B,2)`**.
+
+
+Avec le **théorème de décomposition de la variance**, on déduit la **variance total V**
+
+On en déduit la **variance total V**
+
+```{r}
+V <-   W + B
+
+```
+
+La **variance total** est de **`r round(V,2)`**.
+
+
+On peut à présent calculer le rapport de corrélation η2 défini lorsque V est strictement positif par : **η2 = B/V**.
+
+Cet indicateur mesure la part de variabilité globale imputable aux différences de groupe. Il s’interprète, multiplié par 100, en pourcentage de la variance expliquée par les classes.
+
+```{r}
+rapport_corr <- B/V
+```
+
+
+Le rapport de corrélation est de **`r round(rapport_corr,2)`** signifiant qu’il y a une légère variabilité interclasse par rapport à la variabilité totale.
+
+Traçons les histogrammes et les boxplot de **MaxHR** en fonction de la pente ST
+
+```{r}
+par(mfrow=c(1,2))
+hist(st_slope_up$MaxHR, xlab = "MaxHR", main = "MaxHR lorsque ST_Slope = Up", col = 2)
+hist(st_slope_flat$MaxHR, xlab = "MaxHR", main = "MaxHR lorsque ST_Slope = Flat", col = 3)
+```
+
+
+
+```{r}
+MaxHR_Up <- MaxHR[ST_Slope=="Up"]
+MaxHR_Flat <- MaxHR[ST_Slope=="Flat"]
+```
+```{r}
+summary(MaxHR_Up)
+summary(MaxHR_Flat)
+```
+```{r}
+boxplot(MaxHR_Up, MaxHR_Flat, main="Fréq cardiaque max atteinte selon la pente ST", names=c("Up", "Flat"))
+```
+
+On voit que lorsque la pente est ascendante, la médiane (et la moyenne) de la fréquence cardiaque maximale atteinte est supérieur (150) à lorsqu'elle est nulle (126). On remarque qu'il ya plus de variétés dans les modalités de **MaxHR** lorsque **ST_Slop** = ***Flat** (ça va de 60 jusqu'à presque 200).
+
+Faisons maintenant les tests de comapraisons
+
+
+### Test de variances
+
+Hypothèses:
+- H0: variance égales
+- H1: variance différentes
+
+```{r}
+data <- heart[ST_Slope!="Down",c("MaxHR","ST_Slope")]
+
+var.test(data$MaxHR~data$ST_Slope)
+```
+
+On obtient une **p-valeur** égale à **1** ce qui veut dire qu'on accepte l'hypothèse H0 et donc que les variances sont égale.
+
+On peut poursuivre avec une comparaison des moyennes
+
+### Test de moyennes
+
+Hypothèses:
+- H0: moyennes égales
+- H1: moyennes différentes
+
+```{r}
+t.test(data$MaxHR~data$ST_Slope, var.equal=TRUE)
+```
+
+On trouve une **p-valeur** égale à 2*10^-16, qui est une valeur très petite. On rejette l'hypothèse H0 ce qui veut dire que les moyennes sont différentes.
+
+On peut dire que la variable **ST_Slope** a un certain impact sur **MaxHR**.
+
+
+## Quali x Quali
+
+```{r}
+table(HeartDisease, ExerciseAngina)
+```
+
+On voit que la majorité des individus ayant des maladies cardiaque, ont une angine de poitrine induite par l’exercice.
+
+En terme de fréquence
+
+```{r}
+prop.table(table(HeartDisease, ExerciseAngina))
+```
+
+Il n'y a que 6% des individus ayant une angine de poitrine induite par l'exercice mais n'ayant pas de maladies cardiaques.
+
+```{r}
+prop.table(table(HeartDisease, ExerciseAngina),1)
+spineplot(t(prop.table(table(HeartDisease, ExerciseAngina),1)), col = c("#e02235","#0d0d6b"))
+
+```
+
+Ici, on peut voir selon la proportion d'individu ayant une angine de poitrine en fonction de s'ils ont ou non des maladies cardiaque (**ExerciceAngina** en fonction de **HeartDisease**).
+
+On voit que **62%** des personnes ayant des maladies cardiaques, ont une angine de poitrine et que seulement **13%** des personnes n'ayant pas de maladies cardiaque ont quand même une angine de poitrine.
+
+
+```{r}
+prop.table(table(HeartDisease, ExerciseAngina),2)
+spineplot(t(prop.table(table(HeartDisease, ExerciseAngina),2)),col = c("#e02235","#0d0d6b"))
+```
+À l'inverse, ici on voit la proportion des personnes ayant des maladies cardiaques en fonction de s'ils ont ou non une angine de poitrine. (**HeartDisease** en fonction de **ExerciseAngina**).
+
+**85%** des personnes ayant une angine de poitrine, ont des maladies cardiaques et **35%** des personnes n'ayant pas d'angine de poitrine ont des maladies cardiaques.
+
+
+
+Pour conclure si les deux variables sont liées, il faut regarder si elles sont indépendantes ou pas.
+
+### Test d'indépendance
+
+Hypothèses:
+
+- **H0**: les variables sont indépendantes
+
+- **H1**: les variables sont dépendantes
+
+
+```{r}
+chisq.test(table(HeartDisease, ExerciseAngina))
+```
+
+On trouve une **p-valeur** égale à 2x10^-6. On rejette l'hypothèse H0 et on en déduit que les variables **HeartDiesease** et **ExerciseAngina** sont bien dépendantes.
+
+
+## Quanti x Quanti
+
+Procédons maintenant à l'analyse Quanti x Quanti. Ici, on regarde la régression linéaire permettant (ou pas) d’expliquer la concentration en ozone par la température
+
+
+

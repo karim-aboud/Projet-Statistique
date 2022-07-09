@@ -1,0 +1,710 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Projet - Maladies cardiaques},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Projet - Maladies cardiaques}
+\author{}
+\date{\vspace{-2.5em}2022-06-21}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Les maladies cardiovasculaires (MCV) sont la première cause de décès
+dans le monde. On estime que 17,9 millions de personnes en meurent
+chaque année, ce qui représente 31 \% de tous les décès dans le monde.
+Quatre décès par MCV sur cinq sont dus à des crises cardiaques et à des
+accidents vasculaires cérébraux, et un tiers de ces décès surviennent
+prématurément chez les personnes de moins de 70 ans. L'insuffisance
+cardiaque est un événement courant causé par les MCV et cet ensemble de
+données contient 11 caractéristiques qui peuvent être utilisées pour
+prédire une éventuelle maladie cardiaque.
+
+Les personnes atteintes d'une maladie cardiovasculaire ou présentant un
+risque cardiovasculaire élevé (en raison de la présence d'un ou
+plusieurs facteurs de risque tels que l'hypertension, le diabète,
+l'hyperlipidémie ou une maladie déjà établie) ont besoin d'une détection
+et d'une prise en charge précoces, pour lesquelles un modèle
+d'apprentissage automatique peut être d'une grande aide.
+
+\hypertarget{uxe0-propos-des-donnuxe9es}{%
+\subsection{À propos des données}\label{uxe0-propos-des-donnuxe9es}}
+
+Ci dessous les different variables présentes dans notre jeu de données
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Age} : âge du patient {[}années{]}.
+\item
+  \textbf{Sex} : sexe du patient {[}M : Male, F : Female{]}.
+\item
+  \textbf{ChestPainType} : type de douleur thoracique {[}TA : Angine
+  typique, ATA : Angine atypique, NAP: Douleur non angineuse, ASY :
+  Asymptomatique{]}.
+\item
+  \textbf{RestingBP} : pression artérielle au repos {[}mm Hg{]}.
+\item
+  \textbf{Cholestérol} : cholestérol sérique {[}mm/dl{]}.
+\item
+  \textbf{FastingBS} : glycémie à jeun {[}1 : si FastingBS
+  \textgreater{} 120 mg/dl, 0 : sinon{]}.
+\item
+  \textbf{RestingECG} : résultats de l'électrocardiogramme au repos
+  {[}Normal : normal, ST : présentant une anomalie de l'onde ST-T
+  (inversions de l'onde T et/ou élévation ou dépression du segment ST de
+  \textgreater{} 0,05 mV), HVG : présentant une hypertrophie
+  ventriculaire gauche probable ou certaine selon les critères
+  d'Estes{]}.
+\item
+  \textbf{MaxHR} : fréquence cardiaque maximale atteinte {[}Valeur
+  numérique comprise entre 60 et 202{]}.
+\item
+  \textbf{ExerciseAngina} : angine de poitrine induite par l'exercice
+  {[}Y : Oui, N : Non{]}.
+\item
+  \textbf{Oldpeak} : oldpeak = ST: Dépression du segment ST. La
+  dépression ST désigne une constatation sur un électrocardiogramme,
+  dans laquelle le tracé du segment ST est anormalement bas par rapport
+  à la ligne de base.
+\item
+  \textbf{ST\_Slope} : la pente du segment ST du pic d'exercice {[}Up :
+  en pente ascendante, Flat : plat, Down : en pente descendante{]}.
+\item
+  \textbf{HeartDisease} : classe de sortie {[}1 : maladie cardiaque, 0 :
+  normal{]}.
+\end{enumerate}
+
+\hypertarget{import-des-packages}{%
+\paragraph{Import des packages}\label{import-des-packages}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{lecture-du-jeu-de-donnuxe9es}{%
+\paragraph{Lecture du jeu de
+données}\label{lecture-du-jeu-de-donnuxe9es}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{heart }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"heart.csv"}\NormalTok{)}
+\FunctionTok{attach}\NormalTok{(heart)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{analyse-de-la-structure-des-donnuxe9es}{%
+\paragraph{Analyse de la structure des
+données}\label{analyse-de-la-structure-des-donnuxe9es}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(heart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    918 obs. of  12 variables:
+##  $ Age           : int  40 49 37 48 54 39 45 54 37 48 ...
+##  $ Sex           : chr  "M" "F" "M" "F" ...
+##  $ ChestPainType : chr  "ATA" "NAP" "ATA" "ASY" ...
+##  $ RestingBP     : int  140 160 130 138 150 120 130 110 140 120 ...
+##  $ Cholesterol   : int  289 180 283 214 195 339 237 208 207 284 ...
+##  $ FastingBS     : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ RestingECG    : chr  "Normal" "Normal" "ST" "Normal" ...
+##  $ MaxHR         : int  172 156 98 108 122 170 170 142 130 120 ...
+##  $ ExerciseAngina: chr  "N" "N" "N" "Y" ...
+##  $ Oldpeak       : num  0 1 0 1.5 0 0 0 0 1.5 0 ...
+##  $ ST_Slope      : chr  "Up" "Flat" "Up" "Flat" ...
+##  $ HeartDisease  : int  0 1 0 1 0 0 0 0 1 0 ...
+\end{verbatim}
+
+On a:
+
+\begin{itemize}
+\tightlist
+\item
+  5 variables quantitatives continue (Age, RestingBP, Cholesterol,
+  MaxHR, Oldpeak).
+\item
+  6 variables qualitatives nominale (Sex, ChestPainType, FastingBS,
+  RestingECG, ExerciceAngina, ST\_Slopem, HeartDisease) dont 1 variable
+  cible (HeartDisease)
+\end{itemize}
+
+Avant d'explorer les données, convertissons les attributs de classe en
+fonction des besoins de notre analyse.
+
+En effet, les facteurs sont des variables dans R qui prennent un nombre
+limité de valeurs différentes. Ces variables sont souvent appelées
+variables catégorielles.
+
+L'une des utilisations les plus importantes des facteurs est la
+modélisation statistique, puisque les variables catégoriques entrent
+dans les modèles statistiques différemment des variables continues, le
+stockage des données en tant que facteurs garantit que les fonctions de
+modélisation traiteront ces données correctement.
+
+En observant la structure de notre jeu de données, nous pouvons dire les
+points suivants:-
+
+\begin{itemize}
+\item
+  \textbf{FastingBS} ne peut pas être une variable continue car elle
+  indique seulement si une personne a jeûné pendant la nuit. Nous devons
+  la convertir en facteur et l'étiqueter à notre convenance.
+\item
+  \textbf{HeartDisease} est la variable prédictive et nous indique si
+  l'individu a une insuffisance cardiaque ou non. Par conséquent, nous
+  convertissons la variable en facteur et l'étiquetons à notre
+  convenance.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{heart}\SpecialCharTok{$}\NormalTok{FastingBS }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{FastingBS)}
+\FunctionTok{levels}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{FastingBS) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{)}
+
+\NormalTok{heart}\SpecialCharTok{$}\NormalTok{HeartDisease }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{HeartDisease)}
+\FunctionTok{levels}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{HeartDisease) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Vérification que les changements ci-dessus sont mis en oeuvre
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{FastingBS)}
+\FunctionTok{str}\NormalTok{(heart}\SpecialCharTok{$}\NormalTok{HeartDisease)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Factor w/ 2 levels "No","Yes": 1 1 1 1 1 1 1 1 1 1 ...
+##  Factor w/ 2 levels "No","Yes": 1 2 1 2 1 1 1 1 2 1 ...
+\end{verbatim}
+
+\hypertarget{analyse-univariuxe9e}{%
+\section{Analyse univariée}\label{analyse-univariuxe9e}}
+
+\hypertarget{analyse-descriptive-de-base}{%
+\subsection{Analyse descriptive de
+base}\label{analyse-descriptive-de-base}}
+
+\hypertarget{la-variable-age}{%
+\paragraph{\texorpdfstring{La variable
+\textbf{Age}}{La variable Age}}\label{la-variable-age}}
+
+Voyons tout d'abord la répartition globale de la variable \textbf{Age}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{age\_hist }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(heart, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Age)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth=}\DecValTok{1}\NormalTok{, }\AttributeTok{color=}\StringTok{"black"}\NormalTok{, }\AttributeTok{fill=}\StringTok{"lightblue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{xintercept =} \FunctionTok{mean}\NormalTok{(Age)), }\AttributeTok{color =} \StringTok{"red"}\NormalTok{, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Histogramme de Age"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(age\_hist)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(Age)}
+\FunctionTok{sd}\NormalTok{(Age)}
+\FunctionTok{summary}\NormalTok{(Age)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 53.51089
+## [1] 9.432617
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   28.00   47.00   54.00   53.51   60.00   77.00
+\end{verbatim}
+
+La moyenne est de 53,5 ans, ce qui veut dire que la population étudier
+est une population agé.
+
+La médiane étant de 54 ans (très proche de la moyenne), ceci implique
+qu'il n'ya pas beaucoup de valeurs abérantes (sinon la moyenne serait
+différente par rapport à la médiane).
+
+On veut s'assurer que les variables quantitatives suivent une
+distribution normale.
+
+Il existent plusieurs méthodes pour vérifier si des données suivent une
+loi normale ou non:
+
+\begin{itemize}
+\tightlist
+\item
+  En regardant l'histogramme et la courbe de densité
+\item
+  En traçant le QQ-plot
+\item
+  En testant avec shapiro.test
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(Age, }\AttributeTok{probability =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{main =} \StringTok{"Repartition de l\textquotesingle{}age"}\NormalTok{)}
+
+\FunctionTok{points}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{85}\NormalTok{,}\FloatTok{0.5}\NormalTok{),}\FunctionTok{dnorm}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{85}\NormalTok{,}\FloatTok{0.5}\NormalTok{),}\FunctionTok{mean}\NormalTok{(Age),}\FunctionTok{sd}\NormalTok{(Age)), }\AttributeTok{col=}\StringTok{"red"}\NormalTok{,}\AttributeTok{type=}\StringTok{"l"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqnorm}\NormalTok{(Age)}
+\FunctionTok{abline}\NormalTok{(}\FunctionTok{mean}\NormalTok{(Age),}\FunctionTok{sd}\NormalTok{(Age),}\AttributeTok{col=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-8-2.pdf}
+
+Ici, on voit bien que la variable age est normale car les points du
+graphique Q-Q se trouve sur une ligne diagonale droite.
+
+\hypertarget{la-variable-chetpaintype}{%
+\paragraph{\texorpdfstring{La variable
+\textbf{ChetPainType}}{La variable ChetPainType}}\label{la-variable-chetpaintype}}
+
+Regardons la distribution des different types de douleur thoracique
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{chest\_pain\_bar }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(heart, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{ChestPainType, }\AttributeTok{fill=}\NormalTok{ChestPainType)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Distribution des types de douleur thoracique"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"Effectif"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(chest\_pain\_bar)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+Et en terme de pourcentage..
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{chest\_pain\_table }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(ChestPainType)}
+\NormalTok{chest\_pain\_pct}\OtherTok{\textless{}{-}}\FunctionTok{round}\NormalTok{(chest\_pain\_table}\SpecialCharTok{/}\FunctionTok{sum}\NormalTok{(chest\_pain\_table)}\SpecialCharTok{*}\DecValTok{100}\NormalTok{)}
+
+\NormalTok{lbls1}\OtherTok{\textless{}{-}}\FunctionTok{paste}\NormalTok{(}\FunctionTok{names}\NormalTok{(chest\_pain\_table),chest\_pain\_pct)}
+\NormalTok{lbls}\OtherTok{\textless{}{-}}\FunctionTok{paste}\NormalTok{(lbls1, }\StringTok{"\%"}\NormalTok{, }\AttributeTok{sep=}\StringTok{""}\NormalTok{)}
+
+\FunctionTok{pie}\NormalTok{(chest\_pain\_table, }\AttributeTok{labels =}\NormalTok{ lbls, }
+    \AttributeTok{col =} \FunctionTok{rainbow}\NormalTok{(}\FunctionTok{length}\NormalTok{(lbls)),}
+    \AttributeTok{main=}\StringTok{"Pie Chart of Chest Pain"}\NormalTok{,}\AttributeTok{radius =} \FloatTok{0.9}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+Environ 500 observations sont asymptomatiques, ce qui signifie que la
+moitié (54\%) des individus ne présentaient aucun symptôme préalable
+avant de subir une crise cardiaque.
+
+\hypertarget{la-variable-restingbp}{%
+\subsubsection{\texorpdfstring{La variable
+\textbf{RestingBP}}{La variable RestingBP}}\label{la-variable-restingbp}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(RestingBP)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 132.3965
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sd}\NormalTok{(RestingBP)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 18.51415
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(RestingBP)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0   120.0   130.0   132.4   140.0   200.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(RestingBP)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(RestingBP)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-12-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqnorm}\NormalTok{(RestingBP)}
+\FunctionTok{abline}\NormalTok{(}\FunctionTok{mean}\NormalTok{(RestingBP),}\FunctionTok{sd}\NormalTok{(RestingBP),}\AttributeTok{col=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-12-3.pdf}
+
+Le boxplot ainsi que l'histogramme nous montre qu'il ya des valeurs
+abérantes. Le Q-Q plot ne suit pas très bien la ligne droite diagonale.
+Il faudra donc pense à enlever les valeurs aberantes pour faire en sorte
+que la variable suive une loi normale.
+
+\hypertarget{la-variable-maxhr}{%
+\paragraph{\texorpdfstring{La variable
+\textbf{MaxHR}}{La variable MaxHR}}\label{la-variable-maxhr}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(MaxHR)}
+\FunctionTok{sd}\NormalTok{(MaxHR)}
+\FunctionTok{summary}\NormalTok{(MaxHR)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 136.8094
+## [1] 25.46033
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    60.0   120.0   138.0   136.8   156.0   202.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(MaxHR)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{hist}\NormalTok{(MaxHR)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-14-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqnorm}\NormalTok{(MaxHR)}
+\FunctionTok{abline}\NormalTok{(}\FunctionTok{mean}\NormalTok{(MaxHR),}\FunctionTok{sd}\NormalTok{(MaxHR),}\AttributeTok{col=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-14-3.pdf}
+
+Le boxplot montre que la variable prend beaucoup de modalités allant de
+60 jusqu'à 202. Cependant, le boxplot est assez symétrique (n'est pas
+dispersé en haut ni en bas) avec une moyenne (136.8) proche de la
+médiane (138).
+
+Avec l'histogramme on voit que le mode est à 120 - 150 et que la
+répartition est assez symétrique. Le Q-Q plot suit en grande partie la
+ligne droite diagonale. On peut donc supposer que \textbf{MaxHR} suit
+une loi normale.
+
+\hypertarget{les-estimateurs-de-moyenne-et-variance}{%
+\subsection{Les estimateurs de moyenne et
+variance}\label{les-estimateurs-de-moyenne-et-variance}}
+
+\hypertarget{intervalles-de-confiance-des-moyennes}{%
+\subsection{Intervalles de confiance des
+moyennes}\label{intervalles-de-confiance-des-moyennes}}
+
+\hypertarget{intervalle-de-confiance-de-la-variable-cholesterol}{%
+\paragraph{\texorpdfstring{Intervalle de confiance de la variable
+\textbf{Cholesterol}}{Intervalle de confiance de la variable Cholesterol}}\label{intervalle-de-confiance-de-la-variable-cholesterol}}
+
+La valeur normale de cholestérol total varie en fonction de l'âge et du
+sexe. Chez une femme de 45 à 60 ans, il doit être compris entre 155
+mg/dL et 255 mg/dL. Au-delà de 60 ans, il doit être compris entre 140 et
+265 mg/dL.
+
+On se pose la question à savoir si le cholesterol moyen est
+significativement différent de 230 mg/dL ?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cholesterol }\OtherTok{\textless{}{-}}\NormalTok{ Cholesterol[Cholesterol}\SpecialCharTok{!=}\DecValTok{0}\NormalTok{]}
+\NormalTok{interval\_chol }\OtherTok{\textless{}{-}} \FunctionTok{t.test}\NormalTok{(cholesterol,}\AttributeTok{mu =} \DecValTok{230}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{L'Hypothèse H0 est: la moyenne m = 230}
+
+Dans le résultat ci-dessus : t est la statistique de Student (t =
+6.7576), \textbf{df} est le degré de liberté (df= 745), \textbf{p-value}
+est le degré de significativité du test (p-value = 2.83 × 10-11).
+L'intervalle de confiance de la moyenne à 95\% est également montrée
+(intervalle de confiance= {[}240.3837 248.8871{]}); et enfin, on a la
+valeur moyenne de la série x (moyenne = 244.6354).
+
+La \textbf{p-value} du test est de 2.83 × 10-11. Ce qui est largement
+inférieur à 0.05. On rejette l'hypothèse 0 et on conclut que le
+cholesterol moyen des souris est significativement différent de 200g
+avec une \textbf{p-value} = 2.83 × 10-11.
+
+\hypertarget{intervalle-de-confiance-de-la-variable-cholesterol-1}{%
+\paragraph{\texorpdfstring{Intervalle de confiance de la variable
+\textbf{Cholesterol}}{Intervalle de confiance de la variable Cholesterol}}\label{intervalle-de-confiance-de-la-variable-cholesterol-1}}
+
+\hypertarget{analyse-multivariuxe9e}{%
+\section{Analyse multivariée}\label{analyse-multivariuxe9e}}
+
+\hypertarget{quali-x-quali}{%
+\subsection{Quali x Quali}\label{quali-x-quali}}
+
+Interessons nous de plus près à l'age des individus.
+
+Regardons la variable \textbf{Age} en fonction de la variable
+\textbf{Sex}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{age\_sex\_hist }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(heart, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Age, }\AttributeTok{fill=}\NormalTok{Sex, }\AttributeTok{color=}\NormalTok{Sex)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth=}\DecValTok{1}\NormalTok{,}\AttributeTok{position=}\StringTok{"identity"}\NormalTok{, }\AttributeTok{alpha=}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{data=}\NormalTok{heart, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{xintercept=}\FunctionTok{mean}\NormalTok{(Age), }\AttributeTok{color=}\NormalTok{Sex), }\AttributeTok{linetype=}\StringTok{"dashed"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Distribution of age by sex"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex)}
+
+\FunctionTok{print}\NormalTok{(age\_sex\_hist)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+Les observations masculines sont plus denses entre 50 et 65 ans.
+
+On peut vérifier cela en regardant l'effectif d'hommes et femmes
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(Sex)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Sex
+##   F   M 
+## 193 725
+\end{verbatim}
+
+On voit qu'il y'a 3.7x plus d'hommes que de femmes dans cette étude.
+
+On vérifie si la moyenne d'age pour les deux sex sont proche
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{heart }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Sex) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean =} \FunctionTok{mean}\NormalTok{(Age), }\AttributeTok{n =} \FunctionTok{n}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 3
+##   Sex    mean     n
+##   <chr> <dbl> <int>
+## 1 F      52.5   193
+## 2 M      53.8   725
+\end{verbatim}
+
+Les hommes ont une moyenne d'age de 53.8 ans.
+
+Les femmes ont une moyenne d'age de 52.5 ans.
+
+Bien qu'il y ait 3.7x plus d'hommes que de femmes, les deux moyennes
+sont assez proche. La variable age ne va donc pas biaiser l'analyse en
+faveur d'un des sex.
+
+On s'interesse maintenant à voir les maladies cardiaque en fonction de
+l'age.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(heart,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Age,}\AttributeTok{fill=}\NormalTok{HeartDisease,}\AttributeTok{color=}\NormalTok{HeartDisease)) }\SpecialCharTok{+}
+\FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{binwidth =} \DecValTok{1}\NormalTok{,}\AttributeTok{color=}\StringTok{"black"}\NormalTok{)}\SpecialCharTok{+}
+\FunctionTok{stat\_count}\NormalTok{(}\AttributeTok{geom =} \StringTok{"text"}\NormalTok{, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{stat}\NormalTok{(count)), }
+             \AttributeTok{position =} \FunctionTok{position\_stack}\NormalTok{(), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{)}\SpecialCharTok{+}
+\FunctionTok{ylab}\NormalTok{(}\StringTok{"Effectif"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+Sur ce graphique, on peut voir le nombre de personne qui ont des
+maladies cardiaque en fonction de l'age. Entre 54 et 63 ans le nombre de
+maladies cardiaque est le plus élevé.
+
+Cependant, à première vue, ce graphique peut induire en erreur dans le
+sens où si on regarde pour l'age 72, on voit qu'il n'ya que 3 maladies
+cardiaque comparé 28 maladies cardiaque pour un age de 58 an. Ceci est
+du au fait qu'il ya beacoup moins de données pour l'age 72 (4 données)
+contrairement à l'age 58 (42 données)
+
+Il faut donc aussi voir par proportion d'age.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(heart,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Age,}\AttributeTok{fill=}\NormalTok{HeartDisease,}\AttributeTok{color=}\NormalTok{HeartDisease)) }\SpecialCharTok{+}
+\FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{position =} \StringTok{"fill"}\NormalTok{, }\AttributeTok{binwidth =} \DecValTok{1}\NormalTok{, }\AttributeTok{alpha=}\FloatTok{0.7}\NormalTok{)}\SpecialCharTok{+}
+\FunctionTok{ylab}\NormalTok{(}\StringTok{"Proportion de maladie cardiaque"}\NormalTok{) }\SpecialCharTok{+}
+\FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Proportion de maladie cardiaque en fonction de l\textquotesingle{}age"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+Ici, on voit bien que plus l'age augmente, plus la proportion de
+maladies cardiaque augmente. On voit par exemple que 75\% des personne
+ayant 72 ans, ont des maladies cardiaque contre 64\% pour ceux ayant 58
+ans.
+
+Regardons maintenant la variable \textbf{ChestPainType} en fonction de
+la variable \textbf{Sex}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{chest\_pain\_bar }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(heart, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{ChestPainType, }\AttributeTok{fill=}\NormalTok{ChestPainType)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sex) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Distribution of chest pain type"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(chest\_pain\_bar)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{heart_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+\end{document}
